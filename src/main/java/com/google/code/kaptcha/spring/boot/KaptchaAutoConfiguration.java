@@ -1,7 +1,9 @@
 package com.google.code.kaptcha.spring.boot;
 
-import javax.servlet.ServletException;
 
+import com.google.code.kaptcha.Constants;
+import com.google.code.kaptcha.Producer;
+import com.google.code.kaptcha.spring.boot.servlet.KaptchaJakartaServlet;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,14 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
-import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.servlet.KaptchaServlet;
-import com.google.code.kaptcha.spring.boot.ext.KaptchaResolver;
-import com.google.code.kaptcha.spring.boot.ext.SessionKaptchaResolver;
-import com.google.code.kaptcha.spring.boot.ext.servlet.ExtendKaptchaServlet;
-
 @Configuration
-@ConditionalOnClass({ KaptchaServlet.class })
+@ConditionalOnClass({ Producer.class })
 @EnableConfigurationProperties(KaptchaProperties.class)
 public class KaptchaAutoConfiguration {
 
@@ -35,11 +31,11 @@ public class KaptchaAutoConfiguration {
 	// 验证码
 	@Bean
 	@ConditionalOnMissingBean(name = "kaptchaServlet")
-	public ServletRegistrationBean<ExtendKaptchaServlet> servletRegistrationBean(KaptchaProperties properties,KaptchaResolver kaptchaResolver) throws ServletException {
+	public ServletRegistrationBean<KaptchaJakartaServlet> servletRegistrationBean(KaptchaProperties properties, KaptchaResolver kaptchaResolver) {
 
-		ServletRegistrationBean<ExtendKaptchaServlet> registrationBean = new ServletRegistrationBean<ExtendKaptchaServlet>();
+		ServletRegistrationBean<KaptchaJakartaServlet> registrationBean = new ServletRegistrationBean<KaptchaJakartaServlet>();
 		
-		ExtendKaptchaServlet kaptchaServlet = new ExtendKaptchaServlet(kaptchaResolver);
+		KaptchaJakartaServlet kaptchaServlet = new KaptchaJakartaServlet(kaptchaResolver);
 
 		registrationBean.setServlet(kaptchaServlet);
 		
